@@ -1,34 +1,59 @@
 import { useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../app/store';
 import { useDispatch } from 'react-redux';
-
-import { RootState } from '../store';
-import { decrement, increment, incrementBy5, reset } from './counterSlice';
+import {
+  decrement,
+  increment,
+  incrementByAmount,
+  reset,
+} from '../../features/counter/counterSlice';
+import { useState } from 'react';
 
 const Counter = () => {
-  const count = useSelector((state: RootState) => state.counterR.count);
+  const { count } = useSelector((state: RootState) => state.counterR);
 
-  const dispatch = useDispatch();
+  const [incrementAmount, setIncrementAmount] = useState<number>(0);
+
+  const dispatch: AppDispatch = useDispatch();
 
   const handleIncrement = () => {
     dispatch(increment());
   };
-  const handleIncrementBy5 = () => {
-    dispatch(incrementBy5(5));
-  };
+
   const handleReset = () => {
     dispatch(reset());
   };
+
   const handleDecrement = () => {
     dispatch(decrement());
   };
+  const handleIncrementByAmount = (incrementAmount: number) => {
+    dispatch(incrementByAmount(incrementAmount));
+  };
 
+  const handleIncrementChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIncrementAmount(Number(event.target.value));
+  };
   return (
     <div>
-      <h2>Count : {count}</h2>
-      <button onClick={handleIncrement}>+</button>
-      <button onClick={handleIncrementBy5}>+5</button>
-      <button onClick={handleReset}>0</button>
-      <button onClick={handleDecrement}>-</button>
+      <h2>Count: {count}</h2>
+      <div>
+        <button onClick={handleIncrement}>Increment</button>
+        <button onClick={handleReset}>Reset</button>
+        <button onClick={handleDecrement}>Decrement</button>
+      </div>
+      <div>
+        <input
+          type="number"
+          value={incrementAmount}
+          onChange={handleIncrementChange}
+        />
+        <button onClick={() => handleIncrementByAmount(incrementAmount)}>
+          Increment By Amount
+        </button>
+      </div>
     </div>
   );
 };
